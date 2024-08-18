@@ -7,29 +7,91 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Online Voting System</h1>
+    <h1>Online System Voting</h1>
+    <br>
+    <br>
+        <div class="container">
 
-        <div class="login">
-            <form action="" method="post" class="loginForm">
-                <div class="box">
-                    <label for="username">Username:</label>
-                    <input type="text" id="username" name="username" required>
+            <div class="form sign-in">
+                <h2>login</h2>
+
+                <form action="" method="post">
+                    <label>
+                        <span>Email</span>
+                        <input type="email" name="email">
+                    </label>
+                    <label>
+                        <span>Password</span>
+                        <input type="password" name="password">
+                    </label>
+                    <label>
+                        <select name="type">
+                            <option value="voter">Voter</option>
+                            <option value="group">Group</option>
+                        </select>
+                    </label>
+                    <button type="button" class="submit">Sign In</button>
+                </form>
+
+             
+            </div>
+            <div class="sub-container">
+                <div class="img">
+                    <div class="img__text m--up">
+                     
+                        <h3>Don't have an account? Please Sign up!<h3>
+                    </div>
+                    <div class="img__text m--in">
+                    
+                        <h3>If you already has an account, just sign in.<h3>
+                    </div>
+                    <div class="img__btn">
+                        <span class="m--up">Sign Up</span>
+                        <span class="m--in">Sign In</span>
+                    </div>
                 </div>
-                <div class="box">
-                    <label for="type">Type:</label>
-                    <select name="type" id="">
-                        <option value="voter">Voter</option>
-                        <option value="group">Group</option>
-                    </select>
+                <div class="form sign-up">
+                    <h2>Create your Account</h2>
+                    <form action="" method="post">
+                        <label>
+                            <span>Email</span>
+                            <input type="email" name="email">
+                        </label>
+                        <label>
+                            <span>Password</span>
+                            <input type="password" name="password">
+                        </label>
+                        <label>
+                            <span>Confirm Password</span>
+                            <input type="password" name="ConfirmPassword">
+                        </label>
+                        <label>
+                            <span>Address</span>
+                            <input type="text" name="address">
+                        </label>
+                        <label>
+                            <span>Upload image</span>
+                            <input type="file" name="image">
+                        </label>
+                        <label>
+                            <select name="type">
+                                <option value="voter">Voter</option>
+                                <option value="group">Group</option>
+                            </select>
+                        </label>
+                        <button type="button" class="submit">Sign Up</button>
+                        
+                   
+                    </form>
                 </div>
-                <button>Login</button>
-                <div class="footer">
-                    <span>New user?</span>
-                    <a href="register.php">Register here </a>
-                </div>
-            </form>
+                    
+            </div>
         </div>
-    </div>
+    
+        <script>
+            document.querySelector('.img__btn').addEventListener('click', function() {
+                document.querySelector('.container').classList.toggle('s--signup');
+            });
+        </script>
 </body>
 </html>
