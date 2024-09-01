@@ -14,41 +14,32 @@ if ($password !== $confirmPassword) {
 }
 
 // Check if the email already exists
-$stmt = $pdo->prepare("SELECT * FROM voting WHERE email = ?");
+$stmt = $pdo->prepare("SELECT 1 FROM voting WHERE email = ?");
 $stmt->execute([$email]);
 
-if ($stmt->rowCount() > 0) {
+if ($stmt->fetchColumn()) {
     die("Email already exists");
 }
 
-// Hash the password before storing it
+// Hash the password
 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
 // Default image path
 $image_path = 'default.png';
 
-// Check if the image was uploaded
-if (isset($_FILES["image"]) && $_FILES["image"]["error"] == 0) {
+// image upload
+if (isset($_FILES["image"]) && $_FILES["image"]["error"] === UPLOAD_ERR_OK) {
     $image_path = $_FILES["image"]["name"];
     $tmp_name = $_FILES["image"]["tmp_name"];
-
-    // Check file upload errors
-    if ($_FILES["image"]["error"] === UPLOAD_ERR_OK) {
-        // Move the uploaded file to the permanent location
-        if (move_uploaded_file($tmp_name, "../uploads/$image_path")) {
-            echo "Image uploaded successfully!";
-        } else {
-            die("Failed to move uploaded image.");
-        }
-    } else {
-        die("File upload error: " . $_FILES["image"]["error"]);
+    
+    if (!move_uploaded_file($tmp_name, "../uploads/$image_path")) {
+        die("Failed to move uploaded image.");
     }
-} else {
-    echo "No image uploaded or an error occurred with the image upload.";
 }
 
 // Insert the new user into the database
 $stmt2 = $pdo->prepare("INSERT INTO voting (email, password, address, image_path, type) VALUES (?, ?, ?, ?, ?)");
 $stmt2->execute([$email, $hashedPassword, $address, $image_path, $type]);
+
 echo "Registration successful!";
 ?>
