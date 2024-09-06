@@ -7,91 +7,88 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Online System Voting</h1>
-    <br>
-    <br>
-        <div class="container">
+    <h1>Online Voting System</h1>
+    <br><br>
+    <div class="container">
 
-            <div class="form sign-in">
-                <h2>sign in</h2>
+        <!-- Sign-In Form -->
+        <div class="form sign-in">
+            <h2>Sign In</h2>
+            <form action="php/php.php" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="form_type" value="sign_in">
+                <label>
+                    <span>Email</span>
+                    <input type="email" name="email" required>
+                </label>
+                <label>
+                    <span>Password</span>
+                    <input type="password" name="password" required>
+                </label>
+                <label>
+                    <select name="type" required>
+                        <option value="voter">Voter</option>
+                        <option value="group">Group</option>
+                    </select>
+                </label>
+                <button class="submit">Sign In</button>
+            </form>
+        </div>
+
+        <div class="sub-container">
+            <div class="img">
+                <div class="img__text m--up">
+                    <h3>Don't have an account? Please Sign Up!<h3>
+                </div>
+                <div class="img__text m--in">
+                    <h3>If you already have an account, just sign in.<h3>
+                </div>
+                <div class="img__btn">
+                    <span class="m--up">Sign Up</span>
+                    <span class="m--in">Sign In</span>
+                </div>
+            </div>
+
+            <!-- Sign-Up Form -->
+            <div class="form sign-up">
+                <h2>Create Your Account</h2>
                 <form action="php/php.php" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="form_type" value="sign_up">
                     <label>
                         <span>Email</span>
-                        <input type="email" name="email">
+                        <input type="email" name="email" required>
                     </label>
                     <label>
                         <span>Password</span>
-                        <input type="password" name="password">
+                        <input type="password" name="password" required>
                     </label>
                     <label>
-                        <select name="type">
-                            <option value="voter">Voter</option>
-                            <option value="group">Group</option>
+                        <span>Confirm Password</span>
+                        <input type="password" name="confirmPassword" required>
+                    </label>
+                    <label>
+                        <span>Address</span>
+                        <input type="text" name="address" required>
+                    </label>
+                    <label>
+                        <span>Upload Image</span>
+                        <input type="file" name="image">
+                    </label>
+                    <label>
+                        <select name="type" required>
+                            <option value="voter">voter</option>
+                            <option value="group">vroup</option>
                         </select>
                     </label>
-                    <button class="submit">Sign In</button>
+                    <button class="submit">Sign Up</button>
                 </form>
             </div>
-
-
-            <div class="sub-container">
-
-                <div class="img">
-                    <div class="img__text m--up">
-                     
-                        <h3>Don't have an account? Please Sign up!<h3>
-                    </div>
-                    <div class="img__text m--in">
-                    
-                        <h3>If you already has an account, just sign in.<h3>
-                    </div>
-                    <div class="img__btn">
-                        <span class="m--up">Sign Up</span>
-                        <span class="m--in">Sign In</span>
-                    </div>
-                </div>
-
-
-                <div class="form sign-up">
-                    <h2>Create your Account</h2>
-                    <form action="php/php.php" method="post" enctype="multipart/form-data">
-                        <label>
-                            <span>Email</span>
-                            <input type="email" name="email">
-                        </label>
-                        <label>
-                            <span>Password</span>
-                            <input type="password" name="password">
-                        </label>
-                        <label>
-                            <span>Confirm Password</span>
-                            <input type="password" name="confirmPassword">
-                        </label>
-                        <label>
-                            <span>Address</span>
-                            <input type="text" name="address">
-                        </label>
-                        <label>
-                            <span>Upload image</span>
-                            <input type="file" name="image">
-                        </label>
-                        <label>
-                            <select name="type">
-                                <option value="voter">Voter</option>
-                                <option value="group">Group</option>
-                            </select>
-                        </label>
-                        <button class="submit">Sign Up</button>
-                    </form>
-                </div>
-                    
-            </div>
         </div>
-    
-        <script>
-            document.querySelector('.img__btn').addEventListener('click', function() {
-                document.querySelector('.container').classList.toggle('s--signup');
-            });
-        </script>
+    </div>
+
+    <script>
+        document.querySelector('.img__btn').addEventListener('click', function() {
+            document.querySelector('.container').classList.toggle('s--signup');
+        });
+    </script>
 </body>
 </html>
