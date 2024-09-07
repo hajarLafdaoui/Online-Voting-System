@@ -38,19 +38,20 @@ if ($form_type === 'sign_up') {
 
     $stmt2 = $pdo->prepare("INSERT INTO voting (name,email, password, address, image_path, type) VALUES (?,?, ?, ?, ?, ?)");
     $stmt2->execute([$name,$email, $hashedPassword, $address, $image_path, $type]);
-    header('./index.html');
+    header('../index.html');
 
 } elseif ($form_type === 'sign_in') {
-    $email = $_POST["email"];
+        $email = $_POST["email"];
     $password = $_POST["password"];
     $type = $_POST["type"];
 
-    $stmt = $pdo->prepare("SELECT password FROM voting WHERE email = ? AND type = ?");
+    $stmt = $pdo->prepare("SELECT * FROM voting WHERE email = ? AND type = ?");
     $stmt->execute([$email, $type]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (password_verify($password, $user['password'])) {
+    if ($user && password_verify($password, $user['password'])) {
         $_SESSION['user'] = $user;
+
         if ($type === 'voter') {
             header("Location: voter_home.php");
         } elseif ($type === 'group') {
@@ -60,6 +61,7 @@ if ($form_type === 'sign_up') {
     } else {
         die("Invalid email, password, or type.");
     }
+
 } else {
     die("Unknown form type");
 }
