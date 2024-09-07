@@ -38,7 +38,7 @@ if ($form_type === 'sign_up') {
 
     $stmt2 = $pdo->prepare("INSERT INTO voting (name,email, password, address, image_path, type) VALUES (?,?, ?, ?, ?, ?)");
     $stmt2->execute([$name,$email, $hashedPassword, $address, $image_path, $type]);
-    header('../index.html');
+    header("location: ../index.html");
 
 } elseif ($form_type === 'sign_in') {
         $email = $_POST["email"];
