@@ -2,7 +2,6 @@
 include('connection.php');
 session_start(); // Add this at the top to initiate a session
 
-
 $form_type = $_POST['form_type'];
 
 if ($form_type === 'sign_up') {
@@ -36,12 +35,12 @@ if ($form_type === 'sign_up') {
         }
     }
 
-    $stmt2 = $pdo->prepare("INSERT INTO voting (name,email, password, address, image_path, type) VALUES (?,?, ?, ?, ?, ?)");
-    $stmt2->execute([$name,$email, $hashedPassword, $address, $image_path, $type]);
-    header("location: ../index.html");
+    $stmt2 = $pdo->prepare("INSERT INTO voting (name, email, password, address, image_path, type) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt2->execute([$name, $email, $hashedPassword, $address, $image_path, $type]);
+    header("Location: ../index.html");
 
 } elseif ($form_type === 'sign_in') {
-        $email = $_POST["email"];
+    $email = $_POST["email"];
     $password = $_POST["password"];
     $type = $_POST["type"];
 
@@ -51,6 +50,7 @@ if ($form_type === 'sign_up') {
 
     if ($user && password_verify($password, $user['password'])) {
         $_SESSION['user'] = $user;
+        $_SESSION['user_id'] = $user['id']; // Store user ID in session
 
         if ($type === 'voter') {
             header("Location: voter_home.php");

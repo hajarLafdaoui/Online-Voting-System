@@ -44,3 +44,133 @@ if ($stmt->rowCount() > 0) {
     echo "Email does not exist.";
 }
 ?>
+
+----------------
+<?php
+include('./php/connection.php');
+
+// Fetch groups from the database
+$query = 'SELECT id, name FROM voting WHERE type=?';
+$stmt = $pdo->prepare($query);
+$stmt->execute(['group']);
+$groups = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Voting System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Online Voting System</h1>
+    <br><br>
+    <div class="container">
+
+        <!-- Sign-In Form -->
+        <div class="form sign-in">
+            <h2>Sign In</h2>
+            <form action="php/php.php" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="form_type" value="sign_in">
+                <label>
+                    <span>Email</span>
+                    <input type="email" name="email" required>
+                </label>
+             
+                <label>
+                    <span>Type</span>
+                    <select id="sign-in-type" name="type" required>
+                        <option value="voter">Voter</option>
+                        <option value="group">Group</option>
+                    </select>
+                </label>
+                <div id="sign-in-group-container" style="display:none;">
+                    <label>
+                        <span>Select Group</span>
+                        <select name="group_id">
+                            <?php foreach ($groups as $group): ?>
+                                <option value="<?php echo htmlspecialchars($group['id']); ?>">
+                                    <?php echo htmlspecialchars($group['name']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </label>
+                </div>
+                <button class="submit">Sign In</button>
+            </form>
+        </div>
+
+        <div class="sub-container">
+            <div class="img">
+                <div class="img__text m--up">
+                    <h3>Don't have an account? Please Sign Up!</h3>
+                </div>
+                <div class="img__text m--in">
+                    <h3>If you already have an account, just sign in.</h3>
+                </div>
+                <div class="img__btn">
+                    <span class="m--up">Sign Up</span>
+                    <span class="m--in">Sign In</span>
+                </div>
+            </div>
+
+            <!-- Sign-Up Form -->
+            <div class="form sign-up">
+                <h2>Create Your Account</h2>
+                <form action="php/php.php" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="form_type" value="sign_up">
+                    <label>
+                        <span>Name group/voter</span>
+                        <input type="text" name="name" required>
+                    </label>
+                    <label>
+                        <span>Email</span>
+                        <input type="email" name="email" required>
+                    </label>
+                    <label>
+                        <span>Password</span>
+                        <input type="password" name="password" required>
+                    </label>
+                    <label>
+                        <span>Confirm Password</span>
+                        <input type="password" name="confirmPassword" required>
+                    </label>
+                    <label>
+                        <span>Address</span>
+                        <input type="text" name="address" required>
+                    </label>
+                    <label>
+                        <span>Upload Image</span>
+                        <input type="file" name="image">
+                    </label>
+                    <label>
+                        <span>Type</span>
+                        <select id="sign-up-type" name="type" required>
+                            <option value="voter">Voter</option>
+                            <option value="group">Group</option>
+                        </select>
+                    </label>
+                    
+                    <button class="submit">Sign Up</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector('.img__btn').addEventListener('click', function() {
+            document.querySelector('.container').classList.toggle('s--signup');
+        });
+
+        document.getElementById('sign-in-type').addEventListener('change', function() {
+            let type = this.value;
+            document.getElementById('sign-in-group-container').style.display = type === 'group' ? 'block' : 'none';
+        });
+
+      
+    </script>
+</body>
+</html>
+

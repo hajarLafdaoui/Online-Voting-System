@@ -53,7 +53,7 @@
     <script>
     $(document).ready(function() {
         $('.voter-btn').on('click', function() {
-            var groupId = $(this).data('group-id'); 
+            var groupId = $(this).data('group-id'); // Get the group ID
 
             $.ajax({
                 url: 'vote.php',
