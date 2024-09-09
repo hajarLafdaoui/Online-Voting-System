@@ -1,6 +1,6 @@
 <?php
 include('connection.php');
-session_start(); // Add this at the top to initiate a session
+session_start();
 
 $form_type = $_POST['form_type'];
 
@@ -16,16 +16,20 @@ if ($form_type === 'sign_up') {
         die("Passwords do not match");
     }
 
-    $stmt = $pdo->prepare("SELECT 1 FROM voting WHERE email = ?");
+    // Check if email already exists
+    $stmt = $pdo->prepare("SELECT 1 FROM groups WHERE email = ?");
     $stmt->execute([$email]);
+    $stmt2 = $pdo->prepare("SELECT 1 FROM voters WHERE email = ?");
+    $stmt2->execute([$email]);
 
-    if ($stmt->fetchColumn()) {
+    if ($stmt->fetchColumn() || $stmt2->fetchColumn()) {
         die("Email already exists");
     }
 
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
     $image_path = 'default.png';
 
+    // Handle image upload
     if (isset($_FILES["image"]) && $_FILES["image"]["error"] === UPLOAD_ERR_OK) {
         $image_path = $_FILES["image"]["name"];
         $tmp_name = $_FILES["image"]["tmp_name"];
@@ -35,31 +39,53 @@ if ($form_type === 'sign_up') {
         }
     }
 
-    $stmt2 = $pdo->prepare("INSERT INTO voting (name, email, password, address, image_path, type) VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt2->execute([$name, $email, $hashedPassword, $address, $image_path, $type]);
+    if ($type === 'group') {
+        // Insert into groups table
+        $stmt = $pdo->prepare("INSERT INTO groups (name, email, password, address, image, type) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$name, $email, $hashedPassword, $address, $image_path, $type]);
+
+    } elseif ($type === 'voter') {
+        // Insert into voters table
+        $stmt = $pdo->prepare("INSERT INTO voters (name, email, password, address, image, type) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$name, $email, $hashedPassword, $address, $image_path, $type]);
+    }
+
     header("Location: ../index.html");
+    exit;
 
 } elseif ($form_type === 'sign_in') {
     $email = $_POST["email"];
     $password = $_POST["password"];
     $type = $_POST["type"];
 
-    $stmt = $pdo->prepare("SELECT * FROM voting WHERE email = ? AND type = ?");
-    $stmt->execute([$email, $type]);
+    // Fetch user data based on email and type
+    if ($type === 'group') {
+        $stmt = $pdo->prepare("SELECT * FROM groups WHERE email = ?");
+    } elseif ($type === 'voter') {
+        $stmt = $pdo->prepare("SELECT * FROM voters WHERE email = ?");
+    }
+
+    $stmt->execute([$email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['user'] = $user;
-        $_SESSION['user_id'] = $user['id']; // Store user ID in session
+    if ($user) {
+        // Verify the password
+        if (password_verify($password, $user['password'])) {
+            $_SESSION['user'] = $user;
+            $_SESSION['user_id'] = $user['id']; // Store user ID in session
 
-        if ($type === 'voter') {
-            header("Location: voter_home.php");
-        } elseif ($type === 'group') {
-            header("Location: group_home.php");
+            // Redirect based on user type
+            if ($type === 'voter') {
+                header("Location: voter_home.php");
+            } elseif ($type === 'group') {
+                header("Location: group_home.php");
+            }
+            exit;
+        } else {
+            die("Invalid password.");
         }
-        exit;
     } else {
-        die("Invalid email, password, or type.");
+        die("Invalid email or type.");
     }
 
 } else {

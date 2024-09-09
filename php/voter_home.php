@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-    <?php
+<?php
     include('connection.php');
     session_start();
 
@@ -18,8 +18,9 @@
         exit;
     }
 
-    $stmt = $pdo->prepare("SELECT * FROM voting WHERE type = ?");
-    $stmt->execute(['group']);
+    // Fetch all groups from the groups table
+    $stmt = $pdo->prepare("SELECT * FROM groups");
+    $stmt->execute();
     $groups = $stmt->fetchAll(PDO::FETCH_ASSOC);
     ?>
     <div class="div">
@@ -38,8 +39,7 @@
                 <div class="group">
                     <img src="<?= '../uploads/' . $group['image_path'] ?>" alt="Group Image" class='user-img'>
                     <p>Name: <span><?= $group['name'] ?></span> </p>
-                    <p>Email: <span> <?= $group['email'] ?> </span></p>
-                    <p>Address: <span> <?= $group['address'] ?> </span></p>
+                    <p>Description: <span> <?= $group['description'] ?> </span></p>
                     <p>Number of voters: <span><?= $group['num_voters'] ?></span></p>
                     <button class='voter-btn' data-group-id="<?= $group['id'] ?>">Vote</button>
                 </div>
@@ -48,7 +48,10 @@
             ?> 
         </div>
     </div>
+        </div>
+    </div>
     
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
     $(document).ready(function() {
@@ -72,5 +75,6 @@
         });
     });
     </script>
+
 </body>
 </html>
