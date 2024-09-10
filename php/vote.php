@@ -2,35 +2,33 @@
 include('connection.php');
 session_start();
 
-if (isset($_POST['group_id']) && isset($_SESSION['user'])) {
+if (isset($_POST['group_id'])) {
     $groupId = $_POST['group_id'];
-    $user = $_SESSION['user'];
+    $userId = $_SESSION['user']['id'];
 
     // Check if the user has already voted
+    $stmt = $pdo->prepare("SELECT status FROM voters WHERE id = ?");
+    $stmt->execute([$userId]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
     if ($user['status'] === 'Voted') {
-        echo json_encode(['error' => 'You have already voted!']);
+        echo json_encode(['error' => 'You have already voted.']);
         exit;
     }
 
-    // Update the number of voters in the groups table
+    // Increment the number of voters for the group
     $stmt = $pdo->prepare("UPDATE groups SET num_voters = num_voters + 1 WHERE id = ?");
     $stmt->execute([$groupId]);
 
-    // Update the user's status to 'Voted'
-    $stmt = $pdo->prepare("UPDATE voting SET status = 'Voted' WHERE id = ?");
-    $stmt->execute([$user['id']]);
+    // Update the voter's status
+    $stmt2 = $pdo->prepare("UPDATE voters SET status = 'Voted' WHERE id = ?");
+    $stmt2->execute([$userId]);
 
-    // Update session data
+    // Update session data (optional, if you want immediate reflection in the session)
     $_SESSION['user']['status'] = 'Voted';
 
-    echo json_encode(['success' => 'Vote recorded!']);
+    echo json_encode(['success' => 'Your vote has been recorded']);
 } else {
-    echo json_encode(['error' => 'No user logged in.']);
+    echo json_encode(['error' => 'Invalid group ID']);
 }
 ?>
-
-<!-- JSON.parse in JavaScript
-Purpose: Converts a JSON string into a JavaScript object.
-
-json_encode in PHP
-Purpose: Converts a PHP array or object into a JSON string. -->

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Voter Home</title>
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -25,11 +25,11 @@
     ?>
     <div class="div">
         <div class="user">
-            <img src="<?= '../uploads/' . $user['image_path'] ?>" alt="User Image" class='user-img'>
-            <p>Name: <span><?= $user['name'] ?></span> </p>
-            <p>Email: <span> <?= $user['email'] ?> </span></p>
-            <p>Address: <span> <?= $user['address'] ?> </span></p>
-            <p>Status: <span><?= $user['status'] ?></span> </p>
+            <img src="<?= '../uploads/' . htmlspecialchars($user['image'], ENT_QUOTES, 'UTF-8') ?>" alt="User Image" class='user-img'>
+            <p>Name: <span><?= htmlspecialchars($user['name'], ENT_QUOTES, 'UTF-8') ?></span></p>
+            <p>Email: <span><?= htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8') ?></span></p>
+            <p>Address: <span><?= htmlspecialchars($user['address'], ENT_QUOTES, 'UTF-8') ?></span></p>
+            <p>Status: <span id="user-status"><?= htmlspecialchars($user['status'], ENT_QUOTES, 'UTF-8') ?></span></p>
         </div>
 
         <div class="groups">
@@ -37,26 +37,24 @@
             foreach ($groups as $group) {
                 ?>
                 <div class="group">
-                    <img src="<?= '../uploads/' . $group['image_path'] ?>" alt="Group Image" class='user-img'>
-                    <p>Name: <span><?= $group['name'] ?></span> </p>
-                    <p>Description: <span> <?= $group['description'] ?> </span></p>
-                    <p>Number of voters: <span><?= $group['num_voters'] ?></span></p>
-                    <button class='voter-btn' data-group-id="<?= $group['id'] ?>">Vote</button>
+                    <img src="<?= '../uploads/' . htmlspecialchars($group['image'], ENT_QUOTES, 'UTF-8') ?>" alt="Group Image" class='user-img'>
+                    <p>Name: <span><?= htmlspecialchars($group['name'], ENT_QUOTES, 'UTF-8') ?></span></p>
+                    <p>Number of voters: <span id="group-<?= $group['id'] ?>"><?= htmlspecialchars($group['num_voters'], ENT_QUOTES, 'UTF-8') ?></span></p>
+                    <button class='voter-btn' data-group-id="<?= $group['id'] ?>" data-group-name="<?= htmlspecialchars($group['name'], ENT_QUOTES, 'UTF-8') ?>">Vote</button>
                 </div>
                 <?php         
             }
             ?> 
         </div>
     </div>
-        </div>
-    </div>
-    
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
     $(document).ready(function() {
         $('.voter-btn').on('click', function() {
             var groupId = $(this).data('group-id'); // Get the group ID
+            var button = $(this);
+            var userStatusSpan = $('#user-status');
 
             $.ajax({
                 url: 'vote.php',
@@ -66,7 +64,10 @@
                     var data = JSON.parse(response);
                     if (data.success) {
                         alert(data.success);
-                        location.reload();
+                        userStatusSpan.text('Voted'); // Update status immediately
+                        button.prop('disabled', true); // Disable button after voting
+                        var groupVotersSpan = $('#group-' + groupId);
+                        groupVotersSpan.text(parseInt(groupVotersSpan.text()) + 1); // Update group voters count
                     } else {
                         alert(data.error);
                     }
@@ -75,6 +76,5 @@
         });
     });
     </script>
-
 </body>
 </html>
