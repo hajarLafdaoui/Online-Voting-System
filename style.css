@@ -28,7 +28,7 @@ button {
   overflow: hidden;
   position: relative;
   width: 900px;
-  height: 700px;
+  height: 680px;
   margin: 0 auto 60px;
   background: #fff;
   box-shadow: -10px -10px 15px rgba(255, 255, 255, 0.3), 10px 10px 15px rgba(70, 70, 70, 0.15), inset -10px -10px 15px rgba(255, 255, 255, 0.3), inset 10px 10px 15px rgba(70, 70, 70, 0.15);
@@ -36,6 +36,7 @@ button {
 .container .form {
   position: relative;
   width: 700px;
+  height: 100%;
   transition: transform 1.2s ease-in-out, transform 1.2s ease-in-out;
   padding: 100px 0px 20 30px;
   margin-top: 20px;
@@ -46,6 +47,7 @@ button {
   left: 640px;
   top: 0;
   width: 900px;
+  height: 100%;
   padding-left: 260px;
   background: #fff;
   transition: transform 1.2s ease-in-out;
@@ -286,6 +288,8 @@ input, select {
   justify-content: center;
   align-items: start;
   gap: 10px;
+  padding-right: 15px;
+  border-right: 1px solid black;
 }
 .groups .group .voter-btn {
   border-radius: 9px;
